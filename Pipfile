@@ -7,6 +7,8 @@ verify_ssl = true
 pylint = "*"
 autopep8 = "*"
 bpython = "*"
+ipython = "*"
+ipdb = "*"
 
 [packages]
 gitpython = "*"
