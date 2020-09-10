@@ -117,6 +117,7 @@ def subtrair_mes(ano, mes, qtd):
             mes -= 1
     return {'ano': ano, 'mes': mes}
 
+
 def somar_mes(ano, mes, qtd):
     for i in range(qtd):
         if (mes == 11):
@@ -124,7 +125,7 @@ def somar_mes(ano, mes, qtd):
             ano += 1
         else:
             mes += 1
-    return {'ano': ano, 'mes': mes}    
+    return {'ano': ano, 'mes': mes}
 
 
 if __name__ == "__main__":
@@ -137,7 +138,7 @@ if __name__ == "__main__":
     arquivos = {}
     if user:
         now = datetime.now()
-        month = now.month -1
+        month = now.month - 1
         year = now.year
 
         qtd_meses = 3
@@ -147,9 +148,9 @@ if __name__ == "__main__":
             arquivos.update(request.get_ofs_files({'vigencia': data}))
             data = somar_mes(data['ano'], data['mes'], 1)
 
-        print('# Arquivos OF Manager')
-        for path in arquivos:
-            print(path + " " + arquivos.get(path))
+        # print('# Arquivos OF Manager')
+        # for path in arquivos:
+        #     print(path + " " + arquivos.get(path))
 
     if len(sys.argv) > 1:
         task = sys.argv[1]
