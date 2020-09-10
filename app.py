@@ -1,8 +1,12 @@
 #!/usr/bin/python3
 
 import sys
+from datetime import datetime
 
 import git
+
+import request_of
+from request_of import OfManagerRequest
 
 
 def of_sort_files_type(file):
@@ -53,10 +57,16 @@ class OfManager:
         files.sort(key=of_sort_files_type)
         return files
 
-    def file_to_str(self, offile):
-        if offile.type == 'M':
-            return self.name + '/' + offile.path
-        return offile.type + ' ' + self.name + '/' + offile.path
+    def get_path(self, offile):
+        return self.name + '/' + offile.path
+
+    def file_to_str(self, offile, complexidade=None):
+        result = self.name + '/' + offile.path
+        if complexidade:
+            result = result + ' ' + complexidade
+        if offile.type != 'M':
+            result = offile.type + ' ' + result
+        return result
 
 
 class OfCommit:
@@ -88,9 +98,58 @@ class OfFile:
         return self.type + " " + self.path
 
 
+def subtrair_buscar_arquivos(request, year, month):
+    if (month == 1):
+        month = 12
+        year -= 1
+    else:
+        month -= 1
+    vigencia = {'vigencia': {'mes': month, 'ano': year}}
+    return request.get_ofs_files(vigencia)
+
+
+def subtrair_mes(ano, mes, qtd):
+    for i in range(qtd):
+        if (mes == 1):
+            mes = 12
+            ano -= 1
+        else:
+            mes -= 1
+    return {'ano': ano, 'mes': mes}
+
+def somar_mes(ano, mes, qtd):
+    for i in range(qtd):
+        if (mes == 11):
+            mes = 0
+            ano += 1
+        else:
+            mes += 1
+    return {'ano': ano, 'mes': mes}    
+
+
 if __name__ == "__main__":
     projects = ['/kdi_nia/git/nia-cognitivo-api']
     task = '1384766'
+
+    print("Login OF Manager")
+    request = OfManagerRequest()
+    user = request.autenticar_line_command()
+    arquivos = {}
+    if user:
+        now = datetime.now()
+        month = now.month -1
+        year = now.year
+
+        qtd_meses = 3
+
+        data = subtrair_mes(year, month, qtd_meses)
+        for i in range(qtd_meses + 1):
+            arquivos.update(request.get_ofs_files({'vigencia': data}))
+            data = somar_mes(data['ano'], data['mes'], 1)
+
+        print('# Arquivos OF Manager')
+        for path in arquivos:
+            print(path + " " + arquivos.get(path))
 
     if len(sys.argv) > 1:
         task = sys.argv[1]
@@ -112,8 +171,12 @@ if __name__ == "__main__":
             for commit in commits:
                 print(commit.message)
                 for offile in commit.files:
-                    print(manager.file_to_str(offile))
+                    path = manager.get_path(offile)
+                    complexidade = arquivos.get(path)
+                    print(manager.file_to_str(offile, complexidade))
 
             print("\n\nJoin Commits\n")
             for offile in manager.join_commits(**params):
-                print(manager.file_to_str(offile))
+                path = manager.get_path(offile)
+                complexidade = arquivos.get(path)
+                print(manager.file_to_str(offile, complexidade))
