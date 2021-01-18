@@ -9,7 +9,7 @@ import requests
 
 from _datetime import datetime
 
-url = 'http://core.ofbbts.tech/api/'
+url = 'https://manager-api.bbts.com.br/api/'
 
 url_login = url + 'auth/login'
 
@@ -24,7 +24,7 @@ class OfManagerRequest:
 
     def autenticar(self, username, password):
         data = {'username': username, 'password': password}
-        r = self.session.post(url_login, data=data)
+        r = self.session.post(url_login, data=data, verify=False)
         if r.status_code in (200, 201):
             user = r.json()
             token = 'Bearer ' + user.get('token')
@@ -46,14 +46,14 @@ class OfManagerRequest:
         return files
 
     def get_ofs(self, payload):
-        r = self.session.post(url_ofs, data=json.dumps(payload))
+        r = self.session.post(url_ofs, data=json.dumps(payload), verify=False)
         if r.status_code == 200:
             return r.json()
         return []
 
     def get_of_detail(self, of):
         payload = {"_id": of.get('_id')}
-        r = self.session.post(url_of, data=json.dumps(payload))
+        r = self.session.post(url_of, data=json.dumps(payload), verify=False)
         if r.status_code == 200:
             return r.json()
         return None
