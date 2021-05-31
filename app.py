@@ -8,14 +8,6 @@ import git
 from request_of import OfManagerRequest
 
 
-def of_sort_files_type(file):
-    return file.type
-
-
-def of_sort_files_path(file):
-    return file.path
-
-
 class OfManager:
     def __init__(self, path):
         self.repo = git.Repo(path)
@@ -52,8 +44,8 @@ class OfManager:
                         paths[offile.path_old] = offile
                     paths[offile.path] = offile
                     files.append(offile)
-        files.sort(key=of_sort_files_path)
-        files.sort(key=of_sort_files_type)
+        files.sort(key=lambda x: x.path)
+        files.sort(key=lambda x: x.type)
         return files
 
     def get_path(self, offile):
@@ -81,8 +73,8 @@ class OfCommit:
             offile = OfFile(diff)
             self.files.append(offile)
 
-        self.files.sort(key=of_sort_files_path)
-        self.files.sort(key=of_sort_files_type)
+        self.files.sort(key=lambda x: x.path)
+        self.files.sort(key=lambda x: x.type)
 
 
 class OfFile:
@@ -133,10 +125,10 @@ if __name__ == "__main__":
             print("Commits\n")
             for commit in commits:
                 print(commit.message)
-                for offile in commit.files:
-                    path = manager.get_path(offile)
-                    complexidade = arquivos.get(path)
-                    print(manager.file_to_str(offile, complexidade))
+                # for offile in commit.files:
+                #     path = manager.get_path(offile)
+                #     complexidade = arquivos.get(path)
+                #     print(manager.file_to_str(offile, complexidade))
 
             print("\n\nJoin Commits\n")
             for offile in manager.join_commits(**params):
