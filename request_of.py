@@ -2,12 +2,9 @@
 
 import getpass
 import json
-import sys
+from datetime import datetime
 
-import git
 import requests
-
-from _datetime import datetime
 
 url = 'https://manager-api.bbts.com.br/api/'
 
@@ -24,7 +21,7 @@ class OfManagerRequest:
 
     def autenticar(self, username, password):
         data = {'username': username, 'password': password}
-        r = self.session.post(url_login, data=data, verify=False)
+        r = self.session.post(url_login, data=data)
         if r.status_code in (200, 201):
             user = r.json()
             token = 'Bearer ' + user.get('token')
@@ -46,14 +43,14 @@ class OfManagerRequest:
         return files
 
     def get_ofs(self, payload):
-        r = self.session.post(url_ofs, data=json.dumps(payload), verify=False)
+        r = self.session.post(url_ofs, data=json.dumps(payload))
         if r.status_code == 200:
             return r.json()
         return []
 
     def get_of_detail(self, of):
         payload = {"_id": of.get('_id')}
-        r = self.session.post(url_of, data=json.dumps(payload), verify=False)
+        r = self.session.post(url_of, data=json.dumps(payload))
         if r.status_code == 200:
             return r.json()
         return None
@@ -79,6 +76,40 @@ class OfManagerRequest:
             return user
         else:
             print('Uninformed user')
+
+    def obter_complexidades(self, qtd_meses=3):
+        arquivos = {}
+        now = datetime.now()
+        month = now.month - 1
+        year = now.year
+        data = subtrair_mes(year, month, qtd_meses)
+        for i in range(qtd_meses + 1):
+            arquivos.update(self.get_ofs_files({'vigencia': data}))
+            data = somar_mes(data['ano'], data['mes'], 1)
+        #     print(path + " " + arquivos.get(path))
+        # for path in arquivos:
+        # print('# Arquivos OF Manager')
+        return arquivos
+
+
+def subtrair_mes(ano, mes, qtd):
+    for i in range(qtd):
+        if (mes == 1):
+            mes = 12
+            ano -= 1
+        else:
+            mes -= 1
+    return {'ano': ano, 'mes': mes}
+
+
+def somar_mes(ano, mes, qtd):
+    for i in range(qtd):
+        if (mes == 11):
+            mes = 0
+            ano += 1
+        else:
+            mes += 1
+    return {'ano': ano, 'mes': mes}
 
 
 if __name__ == "__main__":

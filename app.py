@@ -5,7 +5,6 @@ from datetime import datetime
 
 import git
 
-import request_of
 from request_of import OfManagerRequest
 
 
@@ -98,59 +97,22 @@ class OfFile:
         return self.type + " " + self.path
 
 
-def subtrair_buscar_arquivos(request, year, month):
-    if (month == 1):
-        month = 12
-        year -= 1
-    else:
-        month -= 1
-    vigencia = {'vigencia': {'mes': month, 'ano': year}}
-    return request.get_ofs_files(vigencia)
-
-
-def subtrair_mes(ano, mes, qtd):
-    for i in range(qtd):
-        if (mes == 1):
-            mes = 12
-            ano -= 1
-        else:
-            mes -= 1
-    return {'ano': ano, 'mes': mes}
-
-
-def somar_mes(ano, mes, qtd):
-    for i in range(qtd):
-        if (mes == 11):
-            mes = 0
-            ano += 1
-        else:
-            mes += 1
-    return {'ano': ano, 'mes': mes}
+def obter_complexidade_of_manager():
+    print("Login OF Manager")
+    request = OfManagerRequest()
+    user = request.autenticar_line_command()
+    if user:
+        return request.obter_complexidades()
 
 
 if __name__ == "__main__":
     projects = ['/kdi_nia/git/nia-cognitivo-api']
     task = '1384766'
+    BUSCAR_COMPLEXIDADE = False
 
-    print("Login OF Manager")
-    request = OfManagerRequest()
-    user = request.autenticar_line_command()
     arquivos = {}
-    if user:
-        now = datetime.now()
-        month = now.month - 1
-        year = now.year
-
-        qtd_meses = 3
-
-        data = subtrair_mes(year, month, qtd_meses)
-        for i in range(qtd_meses + 1):
-            arquivos.update(request.get_ofs_files({'vigencia': data}))
-            data = somar_mes(data['ano'], data['mes'], 1)
-
-        # print('# Arquivos OF Manager')
-        # for path in arquivos:
-        #     print(path + " " + arquivos.get(path))
+    if BUSCAR_COMPLEXIDADE:
+        arquivos = obter_complexidade_of_manager()
 
     if len(sys.argv) > 1:
         task = sys.argv[1]
