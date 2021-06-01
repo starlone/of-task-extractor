@@ -4,7 +4,7 @@
 ### Download the project
 ```
 git clone https://github.com/starlone/of-task-extractor.git
-cd ok-task-extractor
+cd of-task-extractor
 ```
 
 ### pipenv
