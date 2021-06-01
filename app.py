@@ -49,7 +49,9 @@ class OfManager:
         result = self.name + '/' + offile.path
         if complexidade:
             result = result + ' ' + complexidade
-        if offile.type != 'M':
+        if offile.type == 'A':
+            result = '+' + result
+        elif offile.type != 'M':
             result = offile.type + ' ' + result
         return result + '#' + offile.commit.hexsha[0:10]
 
