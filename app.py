@@ -21,7 +21,7 @@ class OfManager:
         for commit in self.repo.iter_commits(**params):
             ofcommit = OfCommit(commit)
             commits.append(ofcommit)
-
+        commits.reverse()
         return commits
 
     def join_commits(self, **params):
@@ -40,8 +40,9 @@ class OfManager:
                         files.append(offile)
                         paths[offile.path] = offile
                 else:
-                    if offile.type == 'R':
-                        paths[offile.path_old] = offile
+                    if offile.type == 'R' and offile.path_old in paths:
+                        old = paths.get(offile.path_old)
+                        files.remove(old)
                     paths[offile.path] = offile
                     files.append(offile)
         files.sort(key=lambda x: x.path)
@@ -57,7 +58,7 @@ class OfManager:
             result = result + ' ' + complexidade
         if offile.type != 'M':
             result = offile.type + ' ' + result
-        return result
+        return result + '#' + offile.commit.hexsha[0:10]
 
 
 class OfCommit:
@@ -70,7 +71,7 @@ class OfCommit:
         parent = self.commit.parents[0]
         diffs = parent.diff(self.commit)
         for diff in diffs:
-            offile = OfFile(diff)
+            offile = OfFile(self.commit, diff)
             self.files.append(offile)
 
         self.files.sort(key=lambda x: x.path)
@@ -78,10 +79,11 @@ class OfCommit:
 
 
 class OfFile:
-    def __init__(self, diff):
+    def __init__(self, commit, diff):
         self.type = diff.change_type
-        self.path = diff.a_path
-        self.path_old = diff.b_path
+        self.path = diff.b_path
+        self.path_old = diff.a_path
+        self.commit = commit
 
     def __str__(self):
         if self.type == 'R':
@@ -124,7 +126,7 @@ if __name__ == "__main__":
             print('\n ##' + project)
             print("Commits\n")
             for commit in commits:
-                print(commit.message)
+                print('\n ' + commit.commit.hexsha[0:10] + ' - ' + str(commit.commit.authored_datetime) + " - " + commit.message)
                 # for offile in commit.files:
                 #     path = manager.get_path(offile)
                 #     complexidade = arquivos.get(path)
