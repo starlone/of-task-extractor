@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import sys
-from datetime import datetime
 
 import git
 
@@ -33,13 +32,7 @@ class OfManager:
         paths = {}
         for ofcommit in commits:
             for offile in ofcommit.files:
-                old = paths.get(offile.path)
-                if old:
-                    if offile.type == 'A':
-                        files.remove(old)
-                        files.append(offile)
-                        paths[offile.path] = offile
-                else:
+                if offile.path not in paths:
                     if offile.type == 'R' and offile.path_old in paths:
                         old = paths.get(offile.path_old)
                         files.remove(old)
@@ -126,7 +119,8 @@ if __name__ == "__main__":
             print('\n ##' + project)
             print("Commits\n")
             for commit in commits:
-                print('\n ' + commit.commit.hexsha[0:10] + ' - ' + str(commit.commit.authored_datetime) + " - " + commit.message)
+                print('\n ' + commit.commit.hexsha[0:10] + ' - ' + str(
+                    commit.commit.authored_datetime) + " - " + commit.message)
                 # for offile in commit.files:
                 #     path = manager.get_path(offile)
                 #     complexidade = arquivos.get(path)
