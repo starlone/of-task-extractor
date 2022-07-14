@@ -7,12 +7,17 @@ verify_ssl = true
 pylint = "*"
 autopep8 = "*"
 bpython = "*"
-ipython = "*"
 ipdb = "*"
+flake8 = "*"
+rope = "*"
+isort = "*"
 
 [packages]
 gitpython = "*"
 requests = "*"
+fastapi = "*"
+gunicorn = "*"
+uvicorn = "*"
 
 [requires]
 python_version = "3.8"
