@@ -4,8 +4,6 @@ import sys
 
 import git
 
-from request_of import OfManagerRequest
-
 
 class OfManager:
     def __init__(self, path):
@@ -86,22 +84,11 @@ class OfFile:
         return self.type + " " + self.path
 
 
-def obter_complexidade_of_manager():
-    print("Login OF Manager")
-    request = OfManagerRequest()
-    user = request.autenticar_line_command()
-    if user:
-        return request.obter_complexidades()
-
-
 if __name__ == "__main__":
     projects = ['/kdi_nia/git/nia-cognitivo-api']
     task = '1384766'
-    BUSCAR_COMPLEXIDADE = False
 
     arquivos = {}
-    if BUSCAR_COMPLEXIDADE:
-        arquivos = obter_complexidade_of_manager()
 
     if len(sys.argv) > 1:
         task = sys.argv[1]
@@ -123,10 +110,6 @@ if __name__ == "__main__":
             for commit in commits:
                 print('\n ' + commit.commit.hexsha[0:10] + ' - ' + str(
                     commit.commit.authored_datetime) + " - " + commit.message)
-                # for offile in commit.files:
-                #     path = manager.get_path(offile)
-                #     complexidade = arquivos.get(path)
-                #     print(manager.file_to_str(offile, complexidade))
 
             print("\n\nJoin Commits\n")
             for offile in manager.join_commits(**params):
