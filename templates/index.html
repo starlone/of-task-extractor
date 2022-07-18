@@ -1,55 +1,82 @@
-<script src="https://unpkg.com/vue@3"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
 
-<div id="app">
-  <h1>OF Task Extractor</h1>
-  <form @submit.prevent="onSubmit">
-    <div>
-      <label for="project">Project</label>
-      <input v-model="project" id="project" />
-    </div>
-    <div>
-      <label for="task">Task</label>
-      <input v-model="task" id="task" />
-    </div>
-    <button type="submit">Enviar</button>
-  </form>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
 
-  <h2>Commits</h2>
-  <ul>
-    <li v-for="commit in response.commits">{{ commit }}</li>
-  </ul>
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
 
-  <h2>Files</h2>
-  <ul>
-    <li v-for="commit in response.files">{{ commit }}</li>
-  </ul>
-</div>
+  <body id="app">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="#">OF Task Extractor</a>
+      </div>
+    </nav>
+    <main class="container">
+      <form @submit.prevent="onSubmit">
+        <div>
+          <label class="form-label" for="project">Project</label>
+          <input class="form-control" v-model="project" id="project" />
+        </div>
+        <div v-for="task in tasks">
+          <label class="form-label" for="task">Task</label>
+          <input class="form-control" v-model="task.name" id="task" />
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </form>
 
-<script>
-  const { createApp } = Vue;
+      <h2>Commits</h2>
+      <ul>
+        <li v-for="commit in response.commits">{{ commit }}</li>
+      </ul>
 
-  createApp({
-    data() {
-      return {
-        project: "/kdi_nia/git/nia-triton-manager",
-        task: "570346",
-        response: {
-          files: [],
-          commits: [],
+      <h2>Files</h2>
+      <ul>
+        <li v-for="commit in response.files">{{ commit }}</li>
+      </ul>
+    </main>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            project: "/kdi_nia/git/nia-triton-manager",
+            tasks: [{ name: "570346" }],
+            response: {
+              files: [],
+              commits: [],
+            },
+          };
         },
-      };
-    },
-    methods: {
-      onSubmit() {
-        const payload = {
-          project: this.project,
-          task: this.task,
-        };
-        axios.post("/api", payload).then((response) => {
-          this.response = response.data;
-        });
-      },
-    },
-  }).mount("#app");
-</script>
+        methods: {
+          onSubmit() {
+            const payload = {
+              project: this.project,
+              tasks: this.tasks.map((item) => item.name),
+            };
+            axios.post("/api", payload).then((response) => {
+              this.response = response.data;
+            });
+          },
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>

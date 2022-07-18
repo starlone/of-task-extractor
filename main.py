@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import uvicorn
 from fastapi import Body, FastAPI
@@ -15,7 +16,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 class ApiBody(BaseModel):
     project: str
-    task: str
+    tasks: List[str]
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -26,7 +27,10 @@ async def index():
 
 @app.post("/api")
 async def api(payload: ApiBody):
-    commits = git_manager.find_commits(payload.project, payload.task)
+    commits = []
+    for task in payload.tasks:
+        comms = git_manager.find_commits(payload.project, task)
+        commits.extend(comms)
     result = git_manager.join_commits(commits)
     return {
         "files": [str(i) for i in result],
