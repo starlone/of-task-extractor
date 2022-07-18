@@ -21,62 +21,115 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
 
-  <body id="app">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
-      <div class="container">
-        <a class="navbar-brand" href="#">OF Task Extractor</a>
-      </div>
-    </nav>
-    <main class="container">
-      <form @submit.prevent="onSubmit">
-        <div>
-          <label class="form-label" for="project">Project</label>
-          <input class="form-control" v-model="project" id="project" />
+  <body>
+    <div id="app">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+        <div class="container">
+          <a class="navbar-brand" href="#">OF Task Extractor</a>
         </div>
-        <div v-for="task in tasks">
-          <label class="form-label" for="task">Task</label>
-          <input class="form-control" v-model="task.name" id="task" />
-        </div>
-        <button type="submit" class="btn btn-primary">Enviar</button>
-      </form>
+      </nav>
+      <main class="container">
+        <form @submit.prevent="onSubmit">
+          <div>
+            <label class="form-label" for="project">Project</label>
+            <input class="form-control" v-model="project" id="project" />
+          </div>
+          <div>
+            <label class="form-label">Task</label>
+          </div>
+          <div
+            class="input-group mb-3"
+            v-for="task in tasks"
+            style="width: 200px; float: left"
+          >
+            <input
+              class="form-control"
+              v-model="task.name"
+              @change="onChange()"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              @click="removeTask(task)"
+            >
+              -
+            </button>
+          </div>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            @click="addTask()"
+          >
+            +
+          </button>
+          <div style="clear: both">&nbsp;</div>
+          <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
 
-      <h2>Commits</h2>
-      <ul>
-        <li v-for="commit in response.commits">{{ commit }}</li>
-      </ul>
+        <h2>Commits</h2>
+        <ul>
+          <li v-for="commit in response.commits">{{ commit }}</li>
+        </ul>
 
-      <h2>Files</h2>
-      <ul>
-        <li v-for="commit in response.files">{{ commit }}</li>
-      </ul>
-    </main>
-
-    <script>
-      const { createApp } = Vue;
-
-      createApp({
-        data() {
-          return {
-            project: "/kdi_nia/git/nia-triton-manager",
-            tasks: [{ name: "570346" }],
-            response: {
-              files: [],
-              commits: [],
-            },
-          };
-        },
-        methods: {
-          onSubmit() {
-            const payload = {
-              project: this.project,
-              tasks: this.tasks.map((item) => item.name),
-            };
-            axios.post("/api", payload).then((response) => {
-              this.response = response.data;
-            });
-          },
-        },
-      }).mount("#app");
-    </script>
+        <h2>Files</h2>
+        <ul>
+          <li v-for="commit in response.files">{{ commit }}</li>
+        </ul>
+      </main>
+    </div>
   </body>
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          project: "/kdi_nia/git/nia-triton-manager",
+          tasks: [{ name: "570346" }],
+          response: {
+            files: [],
+            commits: [],
+          },
+        };
+      },
+      methods: {
+        onChange() {
+          // Split by space
+          var tasks = this.tasks
+            .map((item) => item.name)
+            .filter((item) => item)
+            .map((item) => item.trim())
+            .map((item) => item.split(" "));
+
+          // Concat array to payload
+          tasks = [].concat(...tasks);
+
+          // Update
+          this.tasks = tasks.map((item) => {
+            return {
+              name: item,
+            };
+          });
+        },
+        onSubmit() {
+          const payload = {
+            project: this.project,
+            tasks: this.tasks.map((item) => item.name),
+          };
+          axios.post("/api", payload).then((response) => {
+            this.response = response.data;
+          });
+        },
+        addTask() {
+          this.tasks.push({ name: "" });
+        },
+        removeTask(item) {
+          const pos = this.tasks.indexOf(item);
+          if (pos != -1) {
+            this.tasks.splice(pos, 1);
+          }
+        },
+      },
+    }).mount("#app");
+  </script>
 </html>
