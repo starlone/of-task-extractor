@@ -1,6 +1,20 @@
 <script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-<div id="app">{{ message }}</div>
+<div id="app">
+  <h1>OF Task Extractor</h1>
+  <form @submit.prevent="onSubmit">
+    <div>
+      <label for="project">Project</label>
+      <input v-model="project" id="project" />
+    </div>
+    <div>
+      <label for="task">Task</label>
+      <input v-model="task" id="task" />
+    </div>
+    <button type="submit">Enviar</button>
+  </form>
+</div>
 
 <script>
   const { createApp } = Vue;
@@ -8,8 +22,20 @@
   createApp({
     data() {
       return {
-        message: "Hello Vue!",
+        project: "/kdi_nia/git/*",
+        task: "570346",
       };
+    },
+    methods: {
+      onSubmit() {
+        const payload = {
+          project: this.project,
+          task: this.task,
+        };
+        axios.post("/api", payload).then((response) => {
+          alert(this.project);
+        });
+      },
     },
   }).mount("#app");
 </script>
