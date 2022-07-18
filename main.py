@@ -6,6 +6,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+import git_manager
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -24,9 +26,11 @@ async def index():
 
 @app.post("/api")
 async def api(payload: ApiBody):
-    print(payload)
+    commits = git_manager.find_commits(payload.project, payload.task)
+    result = git_manager.join_commits(commits)
     return {
-        "message": 'oi'
+        "files": [str(i) for i in result],
+        "commits": [str(i) for i in commits]
     }
 
 

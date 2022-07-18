@@ -14,6 +14,16 @@
     </div>
     <button type="submit">Enviar</button>
   </form>
+
+  <h2>Commits</h2>
+  <ul>
+    <li v-for="commit in response.commits">{{ commit }}</li>
+  </ul>
+
+  <h2>Files</h2>
+  <ul>
+    <li v-for="commit in response.files">{{ commit }}</li>
+  </ul>
 </div>
 
 <script>
@@ -22,8 +32,12 @@
   createApp({
     data() {
       return {
-        project: "/kdi_nia/git/*",
+        project: "/kdi_nia/git/nia-triton-manager",
         task: "570346",
+        response: {
+          files: [],
+          commits: [],
+        },
       };
     },
     methods: {
@@ -33,7 +47,7 @@
           task: this.task,
         };
         axios.post("/api", payload).then((response) => {
-          alert(this.project);
+          this.response = response.data;
         });
       },
     },
