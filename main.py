@@ -1,5 +1,6 @@
 import os
 from typing import List
+import glob
 
 import uvicorn
 from fastapi import Body, FastAPI
@@ -29,8 +30,12 @@ async def index():
 async def api(payload: ApiBody):
     tasks = []
     resp = {'tasks': tasks}
+    projects = glob.glob(payload.project)
     for task in payload.tasks:
-        commits = git_manager.find_commits(payload.project, task)
+        commits = []
+        for project in projects:
+            comms = git_manager.find_commits(project, task)
+            commits.extend(comms)
         result = git_manager.join_commits(commits)
         tasks.append({
             "files": [str(i) for i in result],

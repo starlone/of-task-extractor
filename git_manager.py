@@ -33,7 +33,7 @@ def join_commits(commits):
 
 class OfCommit:
     def __init__(self, commit):
-        project = commit.repo.working_dir.split('/')[-1]
+        self.project = commit.repo.working_dir.split('/')[-1]
 
         self.files = []
 
@@ -45,14 +45,14 @@ class OfCommit:
         parent = self.commit.parents[0]
         diffs = parent.diff(self.commit)
         for diff in diffs:
-            offile = OfFile(project, self, diff)
+            offile = OfFile(self.project, self, diff)
             self.files.append(offile)
 
         self.files.sort(key=lambda x: x.path)
         self.files.sort(key=lambda x: x.type)
 
     def __str__(self):
-        return self.hash + ' - ' + str(self.date) + " - " + self.message
+        return self.project + ' - ' + self.hash + ' - ' + str(self.date) + " - " + self.message
 
 
 class OfFile:
