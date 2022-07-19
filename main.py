@@ -27,15 +27,17 @@ async def index():
 
 @app.post("/api")
 async def api(payload: ApiBody):
-    commits = []
+    tasks = []
+    resp = {'tasks': tasks}
     for task in payload.tasks:
-        comms = git_manager.find_commits(payload.project, task)
-        commits.extend(comms)
-    result = git_manager.join_commits(commits)
-    return {
-        "files": [str(i) for i in result],
-        "commits": [str(i) for i in commits]
-    }
+        commits = git_manager.find_commits(payload.project, task)
+        result = git_manager.join_commits(commits)
+        tasks.append({
+            "files": [str(i) for i in result],
+            "commits": [str(i) for i in commits],
+            "task": task
+        })
+    return resp
 
 
 def get_index_html():

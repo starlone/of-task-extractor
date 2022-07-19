@@ -38,7 +38,7 @@
             <label class="form-label">Task</label>
           </div>
           <div
-            class="input-group mb-3"
+            class="input-group"
             v-for="task in tasks"
             style="width: 200px; float: left"
           >
@@ -63,18 +63,22 @@
             +
           </button>
           <div style="clear: both">&nbsp;</div>
-          <button type="submit" class="btn btn-primary">Enviar</button>
+          <button type="submit" class="btn btn-primary mb-3">Enviar</button>
         </form>
 
-        <h2>Commits</h2>
-        <ul>
-          <li v-for="commit in response.commits">{{ commit }}</li>
-        </ul>
+        <div v-for="task in response.tasks">
+          <h2>Task: {{task.task}}</h2>
+          <h3>Commits</h2>
+          <ul>
+            <li v-for="commit in task.commits">{{ commit }}</li>
+          </ul>
+  
+          <h3>Files</h2>
+          <ul>
+            <li v-for="commit in task.files">{{ commit }}</li>
+          </ul>
+        </div>
 
-        <h2>Files</h2>
-        <ul>
-          <li v-for="commit in response.files">{{ commit }}</li>
-        </ul>
       </main>
     </div>
   </body>
@@ -87,8 +91,13 @@
           project: "/kdi_nia/git/nia-triton-manager",
           tasks: [{ name: "570346" }],
           response: {
-            files: [],
-            commits: [],
+            tasks: [
+              {
+                files: [],
+                commits: [],
+                task: '-'
+              },
+            ],
           },
         };
       },
