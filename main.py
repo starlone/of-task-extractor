@@ -12,7 +12,7 @@ import git_manager
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 class ApiBody(BaseModel):
