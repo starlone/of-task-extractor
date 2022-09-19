@@ -18,19 +18,9 @@ pipenv install
 ```
 
 ## Run
-### Arguments
-```
-pipenv run python app.py <task> <path-project>
-```
 
-#### Example
 ```
-pipenv run python app.py 1234 ~/projects/my-project
-```
-
-#### Multiple Projects
-```
-pipenv run python app.py 1234 ~/projects/my-project1 ~/projects/my-project2
+pipenv run python main.py
 ```
 
 ## Contribute
