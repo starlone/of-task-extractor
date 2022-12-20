@@ -17,6 +17,12 @@
       crossorigin="anonymous"
     ></script>
 
+    <style>
+      body {
+        background-color: #eee;
+      }
+    </style>
+
     <script src="https://unpkg.com/vue@3"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
@@ -63,11 +69,26 @@
             +
           </button>
           <div style="clear: both">&nbsp;</div>
-          <button type="submit" class="btn btn-primary mb-3">Enviar</button>
+          <button type="submit" class="btn btn-primary mb-3" v-if="!submited">
+            Enviar
+          </button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            disabled
+            v-if="submited"
+          >
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Loading...
+          </button>
         </form>
 
         <div v-for="task in response.tasks">
-          <div class="card">
+          <div class="card shadow">
             <div class="card-header">Task: {{task.task}}</div>
             <div class="card-body">
               <h5 class="card-title">Commits</h5>

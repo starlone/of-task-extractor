@@ -27,7 +27,7 @@ async def index():
 
 
 @app.post("/api")
-async def api(payload: ApiBody):
+def api(payload: ApiBody):
     tasks = []
     resp = {'tasks': tasks}
     projects = glob.glob(payload.project)

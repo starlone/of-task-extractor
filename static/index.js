@@ -5,6 +5,7 @@ createApp({
     return {
       project: "/kdi_nia/git/*",
       tasks: [{ name: "feat" }],
+      submited: false,
       response: {
         tasks: [
           {
@@ -36,13 +37,22 @@ createApp({
       });
     },
     onSubmit() {
+      this.submited = true;
       const payload = {
         project: this.project,
         tasks: this.tasks.map((item) => item.name),
       };
-      axios.post("/api", payload).then((response) => {
-        this.response = response.data;
-      });
+      axios
+        .post("/api", payload)
+        .then((response) => {
+          this.response = response.data;
+        })
+        .catch((error) => {
+          alert(error);
+        })
+        .then(() => {
+          this.submited = false;
+        });
     },
     addTask() {
       this.tasks.push({ name: "" });
