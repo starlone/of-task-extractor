@@ -3,7 +3,7 @@ from typing import List
 import glob
 
 import uvicorn
-from fastapi import Body, FastAPI
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -12,7 +12,7 @@ import git_manager
 
 app = FastAPI()
 
-# app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 class ApiBody(BaseModel):
