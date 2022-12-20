@@ -67,78 +67,26 @@
         </form>
 
         <div v-for="task in response.tasks">
-          <h2>Task: {{task.task}}</h2>
-          <h3>Commits</h2>
-          <ul>
-            <li v-for="commit in task.commits">{{ commit }}</li>
-          </ul>
-  
-          <h3>Files</h2>
-          <ul>
-            <li v-for="commit in task.files">{{ commit }}</li>
-          </ul>
+          <div class="card">
+            <div class="card-header">Task: {{task.task}}</div>
+            <div class="card-body">
+              <h5 class="card-title">Commits</h5>
+              <div class="card-text">
+                <ul>
+                  <li v-for="commit in task.commits">{{ commit }}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-footer">
+              <h5 class="card-title">Files</h5>
+              <ul>
+                <li v-for="commit in task.files">{{ commit }}</li>
+              </ul>
+            </div>
+          </div>
         </div>
-
       </main>
     </div>
   </body>
-  <script>
-    const { createApp } = Vue;
-
-    createApp({
-      data() {
-        return {
-          project: "/kdi_nia/git/*",
-          tasks: [{ name: "feat" }],
-          response: {
-            tasks: [
-              {
-                files: [],
-                commits: [],
-                task: '-'
-              },
-            ],
-          },
-        };
-      },
-      methods: {
-        onChange() {
-          // Split by space
-          var tasks = this.tasks
-            .map((item) => item.name)
-            .filter((item) => item)
-            .map((item) => item.trim())
-            .map((item) => item.split(" "));
-
-          // Concat array to payload
-          tasks = [].concat(...tasks);
-
-          // Update
-          this.tasks = tasks.map((item) => {
-            return {
-              name: item,
-            };
-          });
-        },
-        onSubmit() {
-          const payload = {
-            project: this.project,
-            tasks: this.tasks.map((item) => item.name),
-          };
-          axios.post("/api", payload).then((response) => {
-            this.response = response.data;
-          });
-        },
-        addTask() {
-          this.tasks.push({ name: "" });
-        },
-        removeTask(item) {
-          const pos = this.tasks.indexOf(item);
-          if (pos != -1) {
-            this.tasks.splice(pos, 1);
-          }
-        },
-      },
-    }).mount("#app");
-  </script>
+  <script src="static/index.js"></script>
 </html>
