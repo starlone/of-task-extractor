@@ -27,7 +27,7 @@ def join_commits(commits):
                 paths[offile.path] = offile
                 files.append(offile)
     files.sort(key=lambda x: x.path)
-    files.sort(key=lambda x: x.type)
+    files.sort(key=lambda x: x.type, reverse=True)
     return files
 
 
