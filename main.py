@@ -1,6 +1,6 @@
+import glob
 import os
 from typing import List
-import glob
 
 import uvicorn
 from fastapi import FastAPI
@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 import git_manager
+from settings import Settings
 
 app = FastAPI()
 
@@ -24,6 +25,11 @@ class ApiBody(BaseModel):
 async def index():
     index_html_content = get_index_html()
     return HTMLResponse(content=index_html_content, status_code=200)
+
+
+@app.get("/config", response_class=HTMLResponse)
+async def index():
+    return Settings().json()
 
 
 @app.post("/api")
@@ -57,6 +63,6 @@ DEV = os.getenv("DEV", "false") == 'true'
 if __name__ == "__main__":
     if DEV:
         uvicorn.run('main:app', host="0.0.0.0", port=8000,
-                    log_level="info", reload=True, debug=True)
+                    log_level="info", reload=True)
     else:
         uvicorn.run(app, host="0.0.0.0", port=8000)

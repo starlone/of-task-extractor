@@ -2,8 +2,8 @@ const { createApp } = Vue;
 
 createApp({
   data() {
-    return {
-      project: "/kdi_nia/git/*",
+    let config = {
+      project: "/home/user/git/*",
       tasks: [{ name: "feat" }],
       submited: false,
       response: {
@@ -16,6 +16,11 @@ createApp({
         ],
       },
     };
+    axios
+      .get("/config")
+      .then((response) => this.project = response.data.projects_path)
+      .catch((error) => alert(error));
+    return config;
   },
   methods: {
     onChange() {

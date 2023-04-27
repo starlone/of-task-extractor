@@ -18,6 +18,7 @@ requests = "*"
 fastapi = "*"
 gunicorn = "*"
 uvicorn = "*"
+pydantic = {extras = ["dotenv"], version = "*"}
 
 [requires]
 python_version = "3"
